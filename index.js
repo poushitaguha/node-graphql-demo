@@ -98,6 +98,34 @@ let mutationType = new graphql.GraphQLObjectType({
                     });
                 });
             }
+        },
+        updateContact: {
+            type: graphql.GraphQLString,
+            args: {
+                id: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLID)
+                },
+                firstName: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLString)
+                },
+                lastName: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLString)
+                },
+                email: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLString)
+                }
+            },
+            resolve: (root, { id, firstName, lastName, email }) => {
+                return new Promise((resolve, reject) => {
+                    database.run("UPDATE contacts SET firstName = (?), lastName = (?), email = (?) WHERE id = (?);", [firstName, lastName, email, id], (err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(`Contact #${id} updated`);
+                    });
+                });
+            }
         }
+
     }
 });
