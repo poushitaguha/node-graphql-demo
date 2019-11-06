@@ -125,7 +125,24 @@ let mutationType = new graphql.GraphQLObjectType({
                     });
                 });
             }
+        },
+        deleteContact: {
+            type: graphql.GraphQLString,
+            args: {
+                id: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLID)
+                }
+            },
+            resolve: (root, { id }) => {
+                return new Promise((resolve, reject) => {
+                    database.run("DELETE from contacts WHERE id = (?);", [id], (err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(`Contact #${id} deleted`);
+                    });
+                });
+            }
         }
-
     }
 });
