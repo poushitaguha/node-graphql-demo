@@ -63,3 +63,41 @@ let queryType = new graphql.GraphQLObjectType({
         }
     }
 });
+
+// Create a mutation type that corresponds to the create, update and delete operations
+let mutationType = new graphql.GraphQLObjectType({
+    name: "Mutation",
+    fields: {
+        createContact: {
+            type: contactType,
+            args: {
+                firstName: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLString)
+                },
+                lastName: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLString)
+                },
+                email: {
+                    type: new graphql.GraphQLNonNull(graphql.GraphQLString)
+                }
+            },
+            resolve: (root, { firstName, lastName, email }) => {
+                return new Promise((resolve, reject) => {
+                    database.run("INSERT INTO contacts (firstName, lastName, email) VALUES (? ? ?);", [firstName, lastName, email], (err) => {
+                        if (err) {
+                            reject(null);
+                        }
+                        database.get("SELECT last_insert_row_id() as id", (err, row) => {
+                            resolve({
+                                id: row["id"],
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email
+                            });
+                        });
+                    });
+                });
+            }
+        }
+    }
+});
