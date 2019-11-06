@@ -4,7 +4,7 @@ const graphql = require('graphql');
 const expressGraphQL = require('express-graphql');
 
 const app = express();
-const database = new sqlite3.Database("./my.db");
+const database = new sqlite3.Database('./my.db');
 
 // Creating a db in sqlite3
 const createContactTable = () => {
@@ -30,7 +30,7 @@ const contactType = new graphql.GraphQLObjectType({
 
 // Creating a custom graphql query for fetching data from the db
 let queryType = new graphql.GraphQLObjectType({
-    name: "Query",
+    name: 'Query',
     fields: {
         contacts: {
             type: graphql.GraphQLList(contactType),
@@ -68,7 +68,7 @@ let queryType = new graphql.GraphQLObjectType({
 
 // Create a mutation type that corresponds to the create, update and delete operations
 let mutationType = new graphql.GraphQLObjectType({
-    name: "Mutation",
+    name: 'Mutation',
     fields: {
         createContact: {
             type: contactType,
@@ -89,9 +89,9 @@ let mutationType = new graphql.GraphQLObjectType({
                         if (err) {
                             reject(null);
                         }
-                        database.get("SELECT last_insert_row_id() as id", (err, row) => {
+                        database.get('SELECT last_insert_rowid() as id', (err, row) => {
                             resolve({
-                                id: row["id"],
+                                id: row['id'],
                                 firstName: firstName,
                                 lastName: lastName,
                                 email: email
