@@ -3,8 +3,14 @@ const sqlite3 = require('sqlite3').verbose();
 const graphql = require('graphql');
 const expressGraphQL = require('express-graphql');
 
+// Import cors module
+const cors = require('cors');
+// Add the cors middleware to the Express app
 const app = express();
+app.use(cors());
+
 const database = new sqlite3.Database('./my.db');
+
 
 // Creating a db in sqlite3
 const createContactTable = () => {
